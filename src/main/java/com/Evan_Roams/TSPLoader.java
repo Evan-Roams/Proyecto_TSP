@@ -7,57 +7,58 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TSPLoader {
-    private double[][] distanciaMatriz;
-    private int numeroDeCiudades;
+    private List<Node> nodes;
 
-    public TSPLoader(String filepath) throws IOException {
-        loadTSPData(filepath);
+    public TSPLoader(String filePath) {
+        nodes = new ArrayList<>();
+        loadTSPData(filePath);
     }
 
-    private void loadTSPData(String filePath) throws IOException {
-        BufferedReader reader = new BufferedReader(new FileReader(filePath));
-        String line;
-        List<double[]> cities = new ArrayList<>();
+    private void loadTSPData(String filePath) {
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            boolean inNodeSection = false;
 
-        while ((line = reader.readLine()) != null) {
-            line = line.trim();
-            if (line.startsWith("NODE_COORD_SECTION")) {
-                break; // Saltar a la sección de coordenadas
-            }
-        }
+            while ((line = br.readLine()) != null) {
+                line = line.trim();
 
-        while ((line = reader.readLine()) != null && !line.equals("EOF")) {
-            String[] parts = line.trim().split("\\s+");
-            double x = Double.parseDouble(parts[1]);
-            double y = Double.parseDouble(parts[2]);
-            cities.add(new double[]{x, y});
-        }
+                // Detecta el inicio de la sección de coordenadas de nodos
+                if (line.equals("NODE_COORD_SECTION")) {
+                    inNodeSection = true;
+                    continue;
+                }
+                // Detecta el final de la sección
+                if (line.equals("EOF")) {
+                    break;
+                }
 
-        reader.close();
-        this.numeroDeCiudades = cities.size();
-        this.distanciaMatriz = new double[numeroDeCiudades][numeroDeCiudades];
+                // Si estamos en la sección de nodos, procesamos las líneas
+                if (inNodeSection) {
+                    // Divide la línea en tokens
+                    String[] parts = line.split("\\s+");
 
-        // Calcula la distancia euclidiana entre cada par de ciudades
-        for (int i = 0; i < numeroDeCiudades; i++) {
-            for (int j = i; j < numeroDeCiudades; j++) {
-                if (i == j) {
-                    distanciaMatriz[i][j] = 0;
-                } else {
-                    double dx = cities.get(i)[0] - cities.get(j)[0];
-                    double dy = cities.get(i)[1] - cities.get(j)[1];
-                    double distance = Math.sqrt(dx * dx + dy * dy);
-                    distanciaMatriz[i][j] = distance;
-                    distanciaMatriz[j][i] = distance; // matriz simétrica
+                    // Verifica que la línea tenga exactamente 3 elementos: id, x, y
+                    if (parts.length >= 3) {
+                        try {
+                            int id = Integer.parseInt(parts[0]);
+                            double x = Double.parseDouble(parts[1]);
+                            double y = Double.parseDouble(parts[2]);
+                            nodes.add(new Node(id, x, y));
+                        } catch (NumberFormatException e) {
+                            System.err.println("Error al convertir un valor numérico en la línea: " + line);
+                        }
+                    } else {
+                        System.err.println("Línea inválida (se esperaban al menos 3 elementos): " + line);
+                    }
                 }
             }
+        } catch (IOException e) {
+            System.err.println("Error al leer el archivo: " + e.getMessage());
         }
     }
 
-    public double[][] getdistanciaMatriz() {
-        return distanciaMatriz;
-    }
-
-    public int getnumeroDeCiudades() {
-        return numeroDeCiudades;
+    public List<Node> getNodes() {
+        return nodes;
     }
 }
+
