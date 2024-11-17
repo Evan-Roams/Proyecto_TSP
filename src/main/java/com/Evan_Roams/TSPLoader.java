@@ -32,7 +32,7 @@ public class TSPLoader {
                     break;
                 }
 
-                // Si estamos en la sección de nodos, procesamos las líneas
+                // Si estamos en la sección de nodos pues procesamos las líneas
                 if (inNodeSection) {
                     // Divide la línea en tokens
                     String[] parts = line.split("\\s+");

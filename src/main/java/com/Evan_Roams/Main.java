@@ -31,7 +31,7 @@ public class Main {
         // Ejecuta el algoritmo de Vecino Más Cercano
         AlgoritmoTSP tsp = new AlgoritmoTSP(distanceMatrix, numberOfCities);
         int[] tour = tsp.encontrarTour();
-        double tourDistance = tsp.calculateTourDistance(tour);
+        double tourDistance = tsp.calcularDistanciaTour(tour);
 
         // Imprime el resultado
         System.out.println("Tour encontrado:");
