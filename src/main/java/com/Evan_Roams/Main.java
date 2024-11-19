@@ -5,7 +5,7 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) {
         // Ruta al archivo .tsp (asegúrate de cambiarla a la ruta correcta en tu sistema)
-        String filePath = "data/berlin52.tsp";
+        String filePath = "data/usa13509.tsp";
 
         // Crear una instancia de TSPLoader y cargar los datos del archivo
         TSPLoader loader = new TSPLoader(filePath);
@@ -53,41 +53,27 @@ public class Main {
         visitado[ciudadActual] = true;
         tour[0] = ciudadActual;
 
-
         for (int i = 1; i < numeroCiudades; i++) {
             int ciudadMasCercana = -1;
             double distanciaMasCercana = Double.MAX_VALUE;
 
-            //solo ciudades no visitadas
+            //ciudades no visitadas
             for (int j = 0; j < numeroCiudades; j++) {
-                if (visitado[j] == false) {
-                    double distancia= matrizDistancia[ciudadActual][j];
+                if (visitado[j] == false) {  // Si la ciudad no ha sido visitada
+                    double distancia = matrizDistancia[ciudadActual][j];
 
-                    if (distancia< distanciaMasCercana) {
+                    if (distancia < distanciaMasCercana) {
                         ciudadMasCercana = j;
                         distanciaMasCercana = distancia;
-                    } else if (j+1 > matrizDistancia[0].length) {
-                        double distancia2 = matrizDistancia[ciudadActual][j+1];
-
-
-                        // esta optimizacion funciona para determinados casos (para todos los evaluados aparentemente funciona)
-                        if (distancia2 < distancia) {
-                            ciudadMasCercana = j+1;
-                            distanciaMasCercana = distancia2;
-                            j=j+1;
-                        }
                     }
-
                 }
             }
 
-            // Marca la ciudad más cercana como visitada
             visitado[ciudadMasCercana] = true;
             tour[i] = ciudadMasCercana;
             ciudadActual = ciudadMasCercana;
         }
 
-        // Regresa al punto de inicio
         tour[numeroCiudades] = tour[0];
         return tour;
     }
