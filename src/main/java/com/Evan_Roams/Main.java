@@ -5,7 +5,7 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) {
         // Ruta al archivo .tsp (asegúrate de cambiarla a la ruta correcta en tu sistema)
-        String filePath = "pla7397.tsp";
+        String filePath = "data/berlin52.tsp";
 
         // Crear una instancia de TSPLoader y cargar los datos del archivo
         TSPLoader loader = new TSPLoader(filePath);
@@ -70,11 +70,7 @@ public class Main {
                         double distancia2 = matrizDistancia[ciudadActual][j+1];
 
 
-                        // esta optimizacion funciona para determinados casos, no funciona para:
-                        // d15112.tsp
-                        // d18512.tsp
-                        //
-
+                        // esta optimizacion funciona para determinados casos (para todos los evaluados aparentemente funciona)
                         if (distancia2 < distancia) {
                             ciudadMasCercana = j+1;
                             distanciaMasCercana = distancia2;
