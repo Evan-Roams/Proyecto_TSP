@@ -5,7 +5,7 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) {
         // Ruta al archivo .tsp (asegúrate de cambiarla a la ruta correcta en tu sistema)
-        String filePath = "data/rl5934.tsp";
+        String filePath = "pla7397.tsp";
 
         // Crear una instancia de TSPLoader y cargar los datos del archivo
         TSPLoader loader = new TSPLoader(filePath);
@@ -27,49 +27,66 @@ public class Main {
 
                     double dx = node1.getX() - node2.getX();
                     double dy = node1.getY() - node2.getY();
-                    double distance = Math.sqrt(dx * dx + dy * dy);
+                    double distancia= Math.sqrt(dx * dx + dy * dy);
 
-                    matrizDistancia[i][j] = distance;
+                    matrizDistancia[i][j] = distancia;
                 }
             }
         }
 
         // Ejecuta el algoritmo de Vecino Más Cercano
         int[] tour = AlgoritmoTSP_tour(matrizDistancia, numeroCiudades);
-        double tourDistance = calcularDistanciaTour(tour, matrizDistancia);
+        double tourDistancia= calcularDistanciaTour(tour, matrizDistancia);
 
         // Imprime el resultado
         System.out.println("Tour encontrado:");
         for (int city : tour) {
             System.out.print(city + " -> ");
         }
-        System.out.println("\nDistancia total del tour: " + tourDistance);
+        System.out.println("\nDistancia total del tour: " + tourDistancia + " Km");
     }
 
     public static int[] AlgoritmoTSP_tour(double[][] matrizDistancia, int numeroCiudades) {
-        boolean[] visited = new boolean[numeroCiudades];  // Marca las ciudades visitadas
-        int[] tour = new int[numeroCiudades + 1];  // Tour final (con regreso al inicio)
-        int ciudadActual = 0;  // Comienza desde la ciudad 0
-        visited[ciudadActual] = true;
+        boolean[] visitado = new boolean[numeroCiudades];
+        int[] tour = new int[numeroCiudades + 1];
+        int ciudadActual = 0;
+        visitado[ciudadActual] = true;
         tour[0] = ciudadActual;
+
 
         for (int i = 1; i < numeroCiudades; i++) {
             int ciudadMasCercana = -1;
             double distanciaMasCercana = Double.MAX_VALUE;
 
-            // Optimización: solo recorremos las ciudades no visitadas
+            //solo ciudades no visitadas
             for (int j = 0; j < numeroCiudades; j++) {
-                if (visited[j] == false) {
-                    double distance = matrizDistancia[ciudadActual][j];
-                    if (distance < distanciaMasCercana) {
+                if (visitado[j] == false) {
+                    double distancia= matrizDistancia[ciudadActual][j];
+
+                    if (distancia< distanciaMasCercana) {
                         ciudadMasCercana = j;
-                        distanciaMasCercana = distance;
+                        distanciaMasCercana = distancia;
+                    } else if (j+1 > matrizDistancia[0].length) {
+                        double distancia2 = matrizDistancia[ciudadActual][j+1];
+
+
+                        // esta optimizacion funciona para determinados casos, no funciona para:
+                        // d15112.tsp
+                        // d18512.tsp
+                        //
+
+                        if (distancia2 < distancia) {
+                            ciudadMasCercana = j+1;
+                            distanciaMasCercana = distancia2;
+                            j=j+1;
+                        }
                     }
+
                 }
             }
 
             // Marca la ciudad más cercana como visitada
-            visited[ciudadMasCercana] = true;
+            visitado[ciudadMasCercana] = true;
             tour[i] = ciudadMasCercana;
             ciudadActual = ciudadMasCercana;
         }
