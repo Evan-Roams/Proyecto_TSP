@@ -4,24 +4,19 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        // Ruta al archivo .tsp (asegúrate de cambiarla a la ruta correcta en tu sistema)
         String filePath = "data/usa13509.tsp";
 
-        // Crear una instancia de TSPLoader y cargar los datos del archivo
         TSPLoader loader = new TSPLoader(filePath);
 
-        // Obtener la lista de nodos cargados
         List<Node> nodes = loader.getNodes();
 
 
         int numeroCiudades = nodes.size();
-        double[][] matrizDistancia = new double[numeroCiudades][numeroCiudades]; //calculamos la matriz en base a el numero de ciudades de el problema
+        double[][] matrizDistancia = new double[numeroCiudades][numeroCiudades];
 
-        // Calcular las distancias entre cada par de nodos
         for (int i = 0; i < numeroCiudades; i++) {
             for (int j = 0; j < numeroCiudades; j++) {
                 if (i != j) {
-                    // Calcular la distancia Euclidiana entre los nodos i y j (raiz de(x^2 + y^2)) esto es "triangular posicion"
                     Node node1 = nodes.get(i);
                     Node node2 = nodes.get(j);
 
@@ -34,11 +29,9 @@ public class Main {
             }
         }
 
-        // Ejecuta el algoritmo de Vecino Más Cercano
         int[] tour = AlgoritmoTSP_tour(matrizDistancia, numeroCiudades);
         double tourDistancia= calcularDistanciaTour(tour, matrizDistancia);
 
-        // Imprime el resultado
         System.out.println("Tour encontrado:");
         for (int city : tour) {
             System.out.print(city + " -> ");
